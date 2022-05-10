@@ -20,8 +20,8 @@ runs:
     - name: cover profile
       shell: bash
       run: |
-      cd ${{ inputs.project-folder }} 
-      go test -coverprofile=coverage.out -covermode=count ${{ inputs.pakage-to-check }}
+        cd ${{ inputs.project-folder }} 
+        go test -coverprofile=coverage.out -covermode=count ${{ inputs.pakage-to-check }}
 
     - name: Coverage detail by package
       shell: bash
