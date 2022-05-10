@@ -1,0 +1,35 @@
+name: 'Cover golang package'
+description: 'make a validation of coverage of a package and evaluate if is greather than a value'
+inputs:
+  project-folder:  
+    description: 'Folder where is located the main module'
+    required: true
+  pakage-to-check:  
+    description: 'package with files to test'
+    required: true
+  min-coverage:  
+    description: 'Min value to accept unit test'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - run: echo "Running coverage in project ${{ inputs.project-folder }}, package ${{ inputs.pakage-to-check}}, and min coverage to check ${{ inputs.min-coverage}}"
+      shell: bash
+
+    - name: cover profile
+      shell: bash
+      run: |
+      cd ${{ inputs.project-folder }} 
+      go test -coverprofile=coverage.out -covermode=count ${{ inputs.pakage-to-check }}
+
+    - name: Coverage detail by package
+      shell: bash
+      run: go tool cover -func coverage.out
+
+    - name: Evaluating coverage
+      shell: bash
+      run: |
+        total=`go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+'`
+        echo "Total coverage: $total"
+        (( $(echo "$total > ${{ inputs.min-coverage }}") )) && echo "Coverage OK" || echo "Coverage lower than {{ inputs.min-coverage }}" && exit 1
