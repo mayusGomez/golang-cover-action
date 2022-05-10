@@ -23,4 +23,4 @@ runs:
 
         total=`go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+'`
         echo "Total coverage: $total"
-        (( $(echo "$total > ${{ inputs.min-coverage }}") )) && echo "Coverage OK" || echo "Coverage lower than {{ inputs.min-coverage }}" && exit 1
+        (( $(echo "$total > ${{ inputs.min-coverage }}" | bc -l) )) && echo "Coverage OK" || echo "Coverage lower than {{ inputs.min-coverage }}" && exit 1
