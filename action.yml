@@ -31,6 +31,6 @@ runs:
         then 
           echo "Coverage OK" 
         else 
-          echo "Coverage FAIL, lower than ${{ inputs.min-coverage }}" 
+          echo "Coverage FAIL, lower than $MIN_COVERAGE" 
           exit 1
         fi
