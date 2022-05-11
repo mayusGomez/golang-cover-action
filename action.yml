@@ -15,15 +15,19 @@ runs:
   using: "composite"
   steps:
     - name: cover profile
+      env:
+        PROJECT_FOLDER: ${{ inputs.project-folder }}
+        PACK_CHECK: ${{ inputs.pakage-to-check }}
+        MIN_COVERAGE: ${{ inputs.min-coverage }}
       shell: bash
       run: |
-        cd ${{ inputs.project-folder }} 
-        go test -coverprofile=coverage.out -covermode=count ${{ inputs.pakage-to-check }}
+        cd "$PROJECT_FOLDER" 
+        go test -coverprofile=coverage.out -covermode=count "$PACK_CHECK"
         go tool cover -func coverage.out
 
-        total=`go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+'`
+        total=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')
         echo "Total coverage: $total"
-        if (( $(echo "$total > ${{ inputs.min-coverage }}" | bc -l) )) 
+        if [[ "$total" -ge "$MIN_COVERAGE" ]]
         then 
           echo "Coverage OK" 
         else 
