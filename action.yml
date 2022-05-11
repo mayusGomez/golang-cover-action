@@ -27,10 +27,10 @@ runs:
 
         total=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')
         echo "Total coverage: $total"
-        if [[ "$total" -ge "$MIN_COVERAGE" ]]
+        if (( $(echo "$total > ${{ inputs.min-coverage }}" | bc -l) )) 
         then 
           echo "Coverage OK" 
         else 
-          echo "Coverage FAIL, lower than {{ inputs.min-coverage }}" 
+          echo "Coverage FAIL, lower than ${{ inputs.min-coverage }}" 
           exit 1
         fi
